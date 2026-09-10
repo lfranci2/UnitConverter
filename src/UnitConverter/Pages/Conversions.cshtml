@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{conversionType=milestokilometers}/{input=10}"
 @model ConversionsModel
 
 @{
@@ -13,9 +13,18 @@
 <body>
 
 <h1>@ViewData["ConversionType"]</h1>
-<div>
-    <p>Input: @ViewData["Input"] miles</p>
-    <p>Output: @ViewData["Output"] kilometers</p>
-</div>
+@if (@ViewData["ErrorMessage"] != null)
+{
+    <div class="text-danger">
+        <p>@ViewData["ErrorMessage"]</p>
+    </div>
+}
+else
+{
+    <div>
+        <p>Input: @ViewData["Input"] @ViewData["InputUnit"]</p>
+        <p>Output: @ViewData["Output"] @ViewData["OutputUnit"]</p>
+    </div>
+}
 </body>
 </html>
