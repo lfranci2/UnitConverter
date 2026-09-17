@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using UnitConverter.Models;
 
 namespace UnitConverter.Pages;
 
-public class ConversionsModel : PageModel
+public class ConversionsModel : ConversionModel
 {
-    [BindProperty(SupportsGet = true)]
-    public string Input { get; set; } = string.Empty;
-    public string Output { get; set; } = string.Empty;
-    [BindProperty(SupportsGet = true)]
-    public string ConversionType { get; set; } = string.Empty;
+    [BindProperty]
+    public string Conversion { get; set; } = string.Empty;
 
     public void OnGet(string conversionType, string input)
     {
@@ -27,51 +25,51 @@ public class ConversionsModel : PageModel
             @ViewData["ErrorMessage"] = "Input must be a valid number.";
         }
         double conversion = 0.0;
-        switch (conversionType.ToLower())
+        switch (conversionType)
         {
-            case "milestokilometers":
+            case ConversionTypes.MilesToKilometers:
                 @ViewData["InputUnit"] = "Miles";
                 @ViewData["OutputUnit"] = "Kilometers";
                 UnitOf.Length unitMiles = new UnitOf.Length().FromMiles(convertedInput);
                 conversion = unitMiles.ToKilometers();
                 break;
-            case "kilometerstomiles":
+            case ConversionTypes.KilometersToMiles:
                 @ViewData["InputUnit"] = "Kilometers";
                 @ViewData["OutputUnit"] = "Miles";
                 UnitOf.Length unitKilometers = new UnitOf.Length().FromKilometers(convertedInput);
                 conversion = unitKilometers.ToMiles();
                 break;
-            case "fahrenheittocelsius":
+            case ConversionTypes.FahrenheitToCelsius:
                 @ViewData["InputUnit"] = "Fahrenheit";
                 @ViewData["OutputUnit"] = "Celsius";
                 UnitOf.Temperature unitFahrenheit = new UnitOf.Temperature().FromFahrenheit(convertedInput);
                 conversion = unitFahrenheit.ToCelsius();
                 break;
-            case "celsiustofahrenheit":
+            case ConversionTypes.CelsiusToFahrenheit:
                 @ViewData["InputUnit"] = "Celsius";
                 @ViewData["OutputUnit"] = "Fahrenheit";
                 UnitOf.Temperature unitCelsius =  new UnitOf.Temperature().FromCelsius(convertedInput);
                 conversion = unitCelsius.ToFahrenheit();
                 break;
-            case "poundstokilograms":
+            case ConversionTypes.PoundsToKilograms:
                 @ViewData["InputUnit"] = "Pounds";
                 @ViewData["OutputUnit"] = "Kilograms";
                 UnitOf.Mass unitPounds = new UnitOf.Mass().FromPounds(convertedInput);
                 conversion = unitPounds.ToKilograms();
                 break;
-            case "kilogramstopounds":
+            case ConversionTypes.KilogramsToPounds:
                 @ViewData["InputUnit"] = "Kilograms";
                 @ViewData["OutputUnit"] = "Pounds";
                 UnitOf.Mass unitKilograms = new UnitOf.Mass().FromKilograms(convertedInput);
                 conversion = unitKilograms.ToPounds();
                 break;
-            case "secondstominutes":
+            case ConversionTypes.SecondsToMinutes:
                 @ViewData["InputUnit"] = "Seconds";
                 @ViewData["OutputUnit"] = "Minutes";
                 UnitOf.Time unitSeconds = new UnitOf.Time().FromSeconds(convertedInput);
                 conversion = unitSeconds.ToMinutes();
                 break;
-            case "minutestoseconds":
+            case ConversionTypes.MinutesToSeconds:
                 @ViewData["InputUnit"] = "Minutes";
                 @ViewData["OutputUnit"] = "Seconds";
                 UnitOf.Time unitMinutes = new UnitOf.Time().FromMinutes(convertedInput);
