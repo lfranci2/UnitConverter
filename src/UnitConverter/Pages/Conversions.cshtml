@@ -1,4 +1,4 @@
-﻿@page "{conversionType=milestokilometers}/{input=10}"
+﻿@page "{ConversionType=MilesToKilometers}/{Input=3.1415}"
 @model ConversionsModel
 
 @{
@@ -26,5 +26,10 @@ else
         <p>Output: @ViewData["Output"] @ViewData["OutputUnit"]</p>
     </div>
 }
+<div>
+    <p>
+        <a href="/">Return to the conversion form</a>
+    </p>
+</div>
 </body>
 </html>

@@ -9,15 +9,15 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 
     <div class="conversionForm">
-        <form method="get">
-            <label for="conversionType">Conversion Type</label>
+        <form method="get" asp-page="/Conversions">
+            <label class="form-label" for="conversionType">Conversion Type</label>
             <select id="conversionType" name="Conversion.ConversionType" class="form-select">
                 @foreach (var conversion in ConversionTypes.All)
                 {
                     <option value="@conversion.Key">@conversion.Value</option>
                 }
             </select>
-            <label for="input">Input</label>
+            <label class="form-label" for="input">Input</label>
             <input id="input"
                    name="Conversion.Input"
                    type="text"

@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using UnitConverter.Models;
 
 namespace UnitConverter.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel : ConversionModel
 {
     public void OnGet()
     {
-
     }
 }
