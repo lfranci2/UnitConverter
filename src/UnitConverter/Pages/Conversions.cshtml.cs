@@ -7,10 +7,18 @@ namespace UnitConverter.Pages;
 public class ConversionsModel : PageModel
 {
     [BindProperty(SupportsGet = true)]
+    public string ConversionType { get; set; } = string.Empty;
+
+    [BindProperty(SupportsGet = true)]
+    public string Input { get; set; } = string.Empty;
+
     public ConversionModel Conversion { get; set; } = new ConversionModel();
 
     public void OnGet()
     {
+        Conversion.ConversionType = ConversionType;
+        Conversion.Input = Input;
+
         ViewData["ConversionType"] = Conversion.ConversionType;
         ViewData["Title"] = "Conversions";
         double convertedInput = 0.0;
