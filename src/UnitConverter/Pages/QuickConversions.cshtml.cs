@@ -1,11 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using UnitConverter.Services;
 
 namespace UnitConverter.Pages;
 
 public class QuickConversionsModel : ConversionsModel
 {
+    public string Output { get; set; } = string.Empty;
+    private readonly IConversionService _conversionService;
+
+    public QuickConversionsModel(IConversionService conversionService)
+    {
+        _conversionService = conversionService;
+    }
+
     public IEnumerable<SelectListItem> PoundOptions =>
     [
         new("1 pound", "1"),
@@ -26,9 +35,10 @@ public class QuickConversionsModel : ConversionsModel
             });
     }
 
-    public IActionResult OnGetMilesToKilometers(string input)
+    public IActionResult OnGetMilesToKilometers(decimal input)
     {
-        return RedirectToConversion(ConversionTypes.MilesToKilometers, input);
+        Conversion.Output = Convert.ToString(_conversionService.Convert(input, ConversionTypes.MilesToKilometers));
+        return Page();
     }
 
     public IActionResult OnGetKilometersToMiles(string input)
@@ -64,5 +74,10 @@ public class QuickConversionsModel : ConversionsModel
     public IActionResult OnGetSecondsToMinutes(string input)
     {
         return RedirectToConversion(ConversionTypes.SecondsToMinutes, input);
+    }
+
+    public IActionResult PerformConversion(string input, string conversionType)
+    {
+
     }
 }
