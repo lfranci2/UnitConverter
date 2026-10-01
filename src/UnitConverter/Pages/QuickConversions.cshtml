@@ -13,9 +13,24 @@
 </head>
 <body>
 <div>
+    @if (Model.SubmissionCheck)
+    {
+        @if (@ViewData["ErrorMessage"] != null)
+        {
+            <div class="text-danger" role="alert">
+                <h2>@ViewData["ErrorMessage"]</h2>
+            </div>
+        }
+        else
+        {
+            <div>
+                <h2>Input: @ViewData["Input"] @ViewData["InputUnit"]</h2>
+                <h2>Output: @ViewData["Output"] @ViewData["OutputUnit"]</h2>
+            </div>
+        }
+    }
     <!--Miles to Kilometers-->
     <form method="get" asp-page-handler="@ConversionTypes.MilesToKilometers">
-
         <label for="miles" class="form-label">Miles</label>
         <input id="miles" name="input" type="text" class="form-control"/>
         <button type="submit" class="btn btn-primary">Convert</button>
@@ -43,9 +58,8 @@
             min="-10"
             max="30"
             step="1"
-            oninput="this.nextElementSibling.value = this.value"
-        />
-        <output>50</output>
+            oninput="this.nextElementSibling.value = this.value"/>
+        <output>15</output>
         <button type="submit" class="btn btn-primary">Convert</button>
     </form>
     <!--Pounds to Kilograms-->

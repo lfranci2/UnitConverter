@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using UnitConverter.Models;
 using UnitConverter.Services;
 
 namespace UnitConverter.Pages;
@@ -9,6 +10,7 @@ public class QuickConversionsModel : ConversionsModel
 {
     public string Output { get; set; } = string.Empty;
     private readonly IConversionService _conversionService;
+    public bool SubmissionCheck { get; set; }
 
     public QuickConversionsModel(IConversionService conversionService)
     {
@@ -24,60 +26,93 @@ public class QuickConversionsModel : ConversionsModel
         new("50 pounds", "50")
     ];
 
-    private IActionResult RedirectToConversion(string conversionType, string input)
+    public IActionResult OnGetMilesToKilometers(string input)
     {
-        return RedirectToPage(
-            "/Conversions",
-            new
-            {
-                conversionType,
-                input
-            });
-    }
-
-    public IActionResult OnGetMilesToKilometers(decimal input)
-    {
-        Conversion.Output = Convert.ToString(_conversionService.Convert(input, ConversionTypes.MilesToKilometers));
+        PerformConversion(input, ConversionTypes.MilesToKilometers);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Miles;
+        ViewData["OutputUnit"] = UnitTypes.Kilometers;
         return Page();
     }
 
     public IActionResult OnGetKilometersToMiles(string input)
     {
-        return RedirectToConversion(ConversionTypes.KilometersToMiles, input);
+        PerformConversion(input, ConversionTypes.KilometersToMiles);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Kilometers;
+        ViewData["OutputUnit"] = UnitTypes.Miles;
+        return Page();
     }
 
     public IActionResult OnGetFahrenheitToCelsius(string input)
     {
-        return RedirectToConversion(ConversionTypes.FahrenheitToCelsius, input);
+        PerformConversion(input, ConversionTypes.FahrenheitToCelsius);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Fahrenheit;
+        ViewData["OutputUnit"] = UnitTypes.Celsius;
+        return Page();
     }
 
     public IActionResult OnGetCelsiusToFahrenheit(string input)
     {
-        return RedirectToConversion(ConversionTypes.CelsiusToFahrenheit, input);
+        PerformConversion(input, ConversionTypes.CelsiusToFahrenheit);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Celsius;
+        ViewData["OutputUnit"] = UnitTypes.Fahrenheit;
+        return Page();
     }
 
     public IActionResult OnGetKilogramsToPounds(string input)
     {
-        return RedirectToConversion(ConversionTypes.KilogramsToPounds, input);
+        PerformConversion(input, ConversionTypes.KilogramsToPounds);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Kilograms;
+        ViewData["OutputUnit"] = UnitTypes.Pounds;
+        return Page();
     }
 
     public IActionResult OnGetPoundsToKilograms(string input)
     {
-        return RedirectToConversion(ConversionTypes.PoundsToKilograms, input);
+        PerformConversion(input, ConversionTypes.PoundsToKilograms);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Pounds;
+        ViewData["OutputUnit"] = UnitTypes.Kilograms;
+        return Page();
     }
 
     public IActionResult OnGetMinutesToSeconds(string input)
     {
-        return RedirectToConversion(ConversionTypes.MinutesToSeconds, input);
+        PerformConversion(input, ConversionTypes.MinutesToSeconds);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Minutes;
+        ViewData["OutputUnit"] = UnitTypes.Seconds;
+        return Page();
     }
 
     public IActionResult OnGetSecondsToMinutes(string input)
     {
-        return RedirectToConversion(ConversionTypes.SecondsToMinutes, input);
+        PerformConversion(input, ConversionTypes.SecondsToMinutes);
+        ViewData["Input"] = input;
+        ViewData["InputUnit"] = UnitTypes.Seconds;
+        ViewData["OutputUnit"] = UnitTypes.Minutes;
+        return Page();
     }
 
     public IActionResult PerformConversion(string input, string conversionType)
     {
+        SubmissionCheck = true;
+        decimal convertedInput = 0;
+        try
+        {
+            convertedInput = Convert.ToDecimal(input);
+        }
+        catch (FormatException)
+        {
+            ViewData["ErrorMessage"] = "Input must be a valid number.";
 
+        }
+        Conversion.Output = Convert.ToString(_conversionService.Convert(convertedInput, conversionType));
+        ViewData["Output"] = Conversion.Output;
+        return Page();
     }
 }

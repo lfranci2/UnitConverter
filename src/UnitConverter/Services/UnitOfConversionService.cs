@@ -1,3 +1,5 @@
+using UnitConverter.Models;
+
 namespace UnitConverter.Services;
 
 public class UnitOfConversionService : IConversionService
