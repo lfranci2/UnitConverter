@@ -1,3 +1,5 @@
+using UnitConverter.Models;
+
 namespace UnitConverter.Services;
 
 public class UnitOfConversionService : IConversionService
@@ -30,7 +32,8 @@ public class UnitOfConversionService : IConversionService
             case ConversionTypes.SecondsToMinutes:
                 UnitOf.Time unitSeconds = new UnitOf.Time().FromSeconds((double)value);
                 return (decimal)unitSeconds.ToMinutes();
+            default:
+                throw new ArgumentException("Unknown or unsupported conversion type.");
         }
-        return 0;
     }
 }
