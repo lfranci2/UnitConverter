@@ -1,0 +1,27 @@
+@page
+@model UnitConverter.Pages.Logs
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+    <form>
+        <label asp-for="Level" class="form-label">Level</label>
+        <select asp-for="Level" class="form-select">
+            <option value="">All</option>
+            <option value="Information">Information</option>
+            <option value="Warning">Warning</option>
+            <option value="Error">Error</option>
+        </select>
+    </form>
+</div>
+</body>
+</html>

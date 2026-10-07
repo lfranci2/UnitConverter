@@ -10,11 +10,13 @@ public class QuickConversionsModel : ConversionsModel
 {
     public string Output { get; set; } = string.Empty;
     private readonly IConversionService _conversionService;
+    private readonly ILogger<QuickConversionsModel> _logger;
     public bool SubmissionCheck { get; set; }
 
-    public QuickConversionsModel(IConversionService conversionService)
+    public QuickConversionsModel(IConversionService conversionService, ILogger<QuickConversionsModel> logger)
     {
         _conversionService = conversionService;
+        _logger = logger;
     }
 
     public IEnumerable<SelectListItem> PoundOptions =>
@@ -101,17 +103,25 @@ public class QuickConversionsModel : ConversionsModel
     public IActionResult PerformConversion(string input, string conversionType)
     {
         SubmissionCheck = true;
-        decimal convertedInput = 0;
+        decimal result = 0;
         try
         {
-            convertedInput = Convert.ToDecimal(input);
+            result = Convert.ToDecimal(input);
+            _logger.LogInformation(
+                "Coverted {Input} using {ConversionType} with result {Result}",
+                input,
+                conversionType,
+                result);
         }
         catch (FormatException)
         {
+            _logger.LogWarning(
+                "Failed to convert {Input} into a valid number",
+                input);
             ViewData["ErrorMessage"] = "Input must be a valid number.";
 
         }
-        Conversion.Output = Convert.ToString(_conversionService.Convert(convertedInput, conversionType));
+        Conversion.Output = Convert.ToString(_conversionService.Convert(result, conversionType));
         ViewData["Output"] = Conversion.Output;
         return Page();
     }
