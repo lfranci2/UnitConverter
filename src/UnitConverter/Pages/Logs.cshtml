@@ -2,7 +2,6 @@
 @model UnitConverter.Pages.Logs
 
 @{
-    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -13,7 +12,7 @@
 </head>
 <body>
 <div>
-    <form>
+    <form method="get">
         <label asp-for="Level" class="form-label">Level</label>
         <select asp-for="Level" class="form-select">
             <option value="">All</option>
@@ -21,7 +20,49 @@
             <option value="Warning">Warning</option>
             <option value="Error">Error</option>
         </select>
+        <label asp-for="ConversionType" class="form-label">Conversion Type</label>
+        <select class="form-select" asp-for="ConversionType" asp-items="ConversionTypes.ConversionOptions()">
+        </select>
+        <label asp-for="Search" class="form-label">Conversion Type</label>
+        <input type="text" asp-for="Search" class="form-control"/>
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-page="/Logs" class="btn btn-secondary">Clear</a>
     </form>
+    @if (Model.SubmissionCheck)
+    {
+        @if (Model.Entries.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">Message</th>
+                    <th scope="col">Conversion</th>
+                    <th scope="col">Input</th>
+                    <th scope="col">Result</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var entry in Model.Entries)
+                {
+                    <tr>
+                        <td>@entry.Timestamp</td>
+                        <td>@entry.Level</td>
+                        <td>@entry.Message</td>
+                        <td>@entry.ConversionType</td>
+                        <td>@entry.Input</td>
+                        <td>@entry.Result</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No entries match the filter.</p>
+        }
+    }
 </div>
 </body>
 </html>

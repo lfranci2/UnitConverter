@@ -107,6 +107,7 @@ public class QuickConversionsModel : ConversionsModel
         try
         {
             result = Convert.ToDecimal(input);
+            result = _conversionService.Convert(result, conversionType);
             _logger.LogInformation(
                 "Coverted {Input} using {ConversionType} with result {Result}",
                 input,
@@ -116,12 +117,14 @@ public class QuickConversionsModel : ConversionsModel
         catch (FormatException)
         {
             _logger.LogWarning(
-                "Failed to convert {Input} into a valid number",
-                input);
+                "Failed to convert {Input} into a valid number using {ConversionType} (Conversion Type: {ConversionType})",
+                input,
+                conversionType,
+                conversionType);
             ViewData["ErrorMessage"] = "Input must be a valid number.";
 
         }
-        Conversion.Output = Convert.ToString(_conversionService.Convert(result, conversionType));
+        Conversion.Output = Convert.ToString(result);
         ViewData["Output"] = Conversion.Output;
         return Page();
     }

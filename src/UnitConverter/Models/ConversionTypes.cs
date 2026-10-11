@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 namespace UnitConverter.Models;
 
 public static class ConversionTypes
@@ -23,4 +25,13 @@ public static class ConversionTypes
             [MinutesToSeconds] = "Minutes to Seconds",
             [SecondsToMinutes] =  "Seconds to Minutes"
         };
+
+    public static IEnumerable<SelectListItem> ConversionOptions()
+    {
+        return ConversionTypes.All.Select(x => new SelectListItem
+        {
+            Value = x.Key,
+            Text = x.Value
+        });
+    }
 }

@@ -3,46 +3,85 @@ using UnitConverter.Models;
 
 namespace UnitConverter.Services;
 
-
-public class JsonLogReader: ILogReader
+public class JsonLogReader : ILogReader
 {
     private readonly string _logDirectory;
-    private string[] logFiles;
+
     public JsonLogReader(IWebHostEnvironment environment)
     {
         _logDirectory = Path.Combine(
             environment.ContentRootPath,
             "Logs");
-        logFiles = Directory.GetFiles(_logDirectory, "*.json");
     }
 
     public IEnumerable<LogEntry> Read()
     {
-        IEnumerable<LogEntry> totalLogs = new List<LogEntry>();
-        foreach (string logFile in logFiles)
+        var totalLogs = new List<LogEntry>();
+
+        if (!Directory.Exists(_logDirectory))
         {
-            string[] lines = File.ReadAllLines(logFile);
-            foreach (string line in lines)
+            return totalLogs;
+        }
+
+        foreach (string logFile in Directory.GetFiles(_logDirectory, "*.json"))
+        {
+            try
             {
-                // Deserialize this JSON record here.
-                LogEntry? entry;
-                try
+                using var stream = new FileStream(
+                    logFile,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite | FileShare.Delete);
+
+                using var reader = new StreamReader(stream);
+
+                string? line;
+
+                while ((line = reader.ReadLine()) != null)
                 {
-                    entry = JsonSerializer.Deserialize<LogEntry>(line);
+                    LogEntry? entry;
+
+                    try
+                    {
+                        entry = JsonSerializer.Deserialize<LogEntry>(line);
+                    }
+                    catch (JsonException)
+                    {
+                        entry = new LogEntry
+                        {
+                            Message = "Failed to deserialize this JSON line.",
+                            Level = LogLevel.Error.ToString()
+                        };
+                    }
+
+                    if (entry == null)
+                    {
+                        entry = new LogEntry
+                        {
+                            Message = "Failed to deserialize this JSON line.",
+                            Level = LogLevel.Error.ToString()
+                        };
+                    }
+
+                    if (string.IsNullOrEmpty(entry.Level))
+                    {
+                        entry.Level = LogLevel.Information.ToString();
+                    }
+
+                    totalLogs.Add(entry);
                 }
-                catch (Exception e)
+            }
+            catch (IOException)
+            {
+                LogEntry entry = new LogEntry
                 {
-                    entry = new LogEntry();
-                    entry.Message = "Failed to deserialize this JSON line.";
-                    entry.Level = LogLevel.Error.ToString();
-                }
-                if (entry.Level == null | entry.Level == "")
-                {
-                    entry.Level = LogLevel.Information.ToString();
-                }
-                totalLogs.Append(entry);
+                    Message = "IO exception",
+                    Level = LogLevel.Error.ToString()
+                };
+                totalLogs.Add(entry);
             }
         }
+
         return totalLogs;
     }
 }
